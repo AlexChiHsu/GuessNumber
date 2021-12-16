@@ -17,6 +17,9 @@ namespace GuessNumber
 		static int countB = 0;
 		static int[] guspwd = new int[4];
 		static MODE_TYPE mode = MODE_TYPE.SET_UP;
+		static int count = 0;
+		static char[] arr;
+		static Random r = new Random();
 
 		public static void setUp()
 		{
@@ -26,23 +29,8 @@ namespace GuessNumber
 		}
 		public static void randomNum()
 		{
-			Random r = new Random();
-			for (int i = 0; i < 4; i++)
-			{
-				answer[i] = r.Next(0, 10);
-			}
-
-			for (int i = 0; i < 4; i++)
-			{
-				for (int j = 3; j > i; j--)
-				{
-					if (answer[j] == answer[i])
-					{
-						answer[j] = r.Next(0, 10);
-						j++;
-					}
-				}
-			}
+			count = 0;
+			check(answer);
 			Console.WriteLine("Answer: " + answer[0] + "" + answer[1] + "" + answer[2] + "" + answer[3] + "");
 		}
 		public static void GameStart()
@@ -54,25 +42,44 @@ namespace GuessNumber
 		public static void Guess()
 		{
 			guess = Console.ReadLine();
-			char[] arr = guess.ToCharArray();
+			arr = guess.ToCharArray();
 			if (arr.Length != 4)
 			{
 				Console.WriteLine("Error, please reentry");
 				Guess();
 			}
-
+			count = 1;
+			check(guspwd);
+		}
+		public static void check(int[] input)
+		{
 			for (int i = 0; i < 4; i++)
 			{
-                guspwd[i] = arr[i] - '0';
+				if (count == 0)
+				{
+					answer[i] = r.Next(0, 10);
+				}
+				else
+				{
+					guspwd[i] = arr[i] - '0';
+				}
 			}
 			for (int i = 0; i < 4; i++)
 			{
 				for (int j = 3; j > i; j--)
 				{
-					if (guspwd[j] == guspwd[i])
+					if (input[j] == input[i])
 					{
-						Console.WriteLine("The numbers repeated, please reentry");
-						Guess();
+						if (count == 0)
+						{
+							input[j] += 1;
+							input[j] %= 10;
+						}
+						else
+						{
+							Console.WriteLine("The numbers repeated, please reentry");
+							Guess();
+						}
 					}
 				}
 			}
